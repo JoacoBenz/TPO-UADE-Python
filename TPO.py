@@ -1,9 +1,8 @@
 # ============================================================
-#  Sistema de Prestamos - Python basico
-#  Solo funciones y listas de listas. Sin memoria (volatil).
+#  Sistema de Prestamos
 # ============================================================
 
-import os
+import os 
 
 
 # Listas donde se guardan los datos mientras el programa corre.
@@ -17,11 +16,13 @@ TASA_MORA = 0.01   # 1% por dia de atraso
 # ============================================================
 #  Calculo de cuotas
 # ============================================================
+# Calcula la cuota fija con interes simple sobre el capital.
 def calcular_cuota_simple(capital, tasa, n):
     total = capital + capital * tasa * n
     return total / n
 
 
+# Calcula la cuota fija con sistema frances (interes sobre saldo).
 def calcular_cuota_frances(capital, tasa, n):
     if tasa == 0:
         return capital / n
@@ -31,6 +32,7 @@ def calcular_cuota_frances(capital, tasa, n):
 # ============================================================
 #  Saldo pendiente de un prestamo
 # ============================================================
+# Suma el monto de las cuotas todavia impagas de un prestamo.
 def saldo_pendiente(id_prestamo):
     total = 0.0
     for c in cuotas:
@@ -42,6 +44,7 @@ def saldo_pendiente(id_prestamo):
 # ============================================================
 #  Clientes
 # ============================================================
+# Pide los datos de un cliente, los valida y lo agrega a la lista.
 def registrar_cliente():
     titulo("REGISTRAR CLIENTE")
     print("  Complete los datos del nuevo cliente:")
@@ -89,6 +92,7 @@ def registrar_cliente():
     print("   DNI         :", dni)
 
 
+# Muestra en una tabla todos los clientes cargados.
 def listar_clientes():
     titulo("CLIENTES")
     if len(clientes) == 0:
@@ -106,6 +110,7 @@ def listar_clientes():
 # ============================================================
 #  Prestamos
 # ============================================================
+# Pide los datos del prestamo, calcula la cuota y genera el plan de cuotas.
 def registrar_prestamo():
     titulo("REGISTRAR PRESTAMO")
     if len(clientes) == 0:
@@ -214,6 +219,7 @@ def registrar_prestamo():
     print("   Total a pagar  : $", round(cuota * n, 2))
 
 
+# Muestra en una tabla todos los prestamos con su saldo actual.
 def listar_prestamos():
     titulo("PRESTAMOS")
     if len(prestamos) == 0:
@@ -234,6 +240,7 @@ def listar_prestamos():
 # ============================================================
 #  Pagos
 # ============================================================
+# Registra el pago de una cuota, aplica la mora y actualiza el estado.
 def registrar_pago():
     titulo("REGISTRAR PAGO")
     print("")
@@ -326,6 +333,7 @@ def registrar_pago():
 # ============================================================
 #  Consultas
 # ============================================================
+# Lista los prestamos que todavia tienen saldo pendiente.
 def ver_deudas_activas():
     titulo("DEUDAS ACTIVAS")
     hay = False
@@ -343,6 +351,7 @@ def ver_deudas_activas():
         print("No hay deudas activas.")
 
 
+# Muestra el detalle de prestamos y cuotas de un cliente y su deuda total.
 def reporte_cliente():
     titulo("REPORTE POR CLIENTE")
     print("")
@@ -382,14 +391,15 @@ def reporte_cliente():
 # ============================================================
 #  Menu principal
 # ============================================================
+# Imprime un encabezado con marco ASCII para cada seccion.
 def titulo(texto):
-    # Imprime un encabezado con marco ASCII
     linea = "+" + "-" * 40 + "+"
     print(linea)
     print("| " + texto.ljust(38) + " |")
     print(linea)
 
 
+# Muestra el menu principal con las opciones disponibles.
 def menu():
     print("")
     print("+========================================+")
@@ -406,6 +416,7 @@ def menu():
     print("+========================================+")
 
 
+# Bucle principal: muestra el menu y ejecuta la opcion elegida.
 def main():
     while True:
         os.system("cls")
