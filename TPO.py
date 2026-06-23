@@ -3,6 +3,9 @@
 #  Solo funciones y listas de listas. Sin memoria (volatil).
 # ============================================================
 
+import os
+
+
 # Listas donde se guardan los datos mientras el programa corre.
 clientes = []    # [id, nombre, dni, telefono]
 prestamos = []   # [id, id_cliente, capital, tasa, cuotas, sistema, estado]
@@ -40,48 +43,151 @@ def saldo_pendiente(id_prestamo):
 #  Clientes
 # ============================================================
 def registrar_cliente():
-    print("\n--- Registrar cliente ---")
-    nombre = input("Nombre y apellido: ")
-    dni = input("DNI: ")
-    telefono = input("Telefono: ")
+    titulo("REGISTRAR CLIENTE")
+    print("  Complete los datos del nuevo cliente:")
+    print("")
+
+    nombre = input("   Nombre y apellido : ")
+    while nombre == "":
+        print("   !! El nombre no puede estar vacio.")
+        nombre = input("   Nombre y apellido : ")
+
+    dni = input("   DNI              : ")
+    valido = False
+    while valido == False:
+        valido = True
+        if dni == "":
+            valido = False
+        for letra in dni:
+            if letra < "0" or letra > "9":
+                valido = False
+        if valido == False:
+            print("   !! El DNI debe ser un numero.")
+            dni = input("   DNI              : ")
+
+    telefono = input("   Telefono         : ")
+    valido = False
+    while valido == False:
+        valido = True
+        if telefono == "":
+            valido = False
+        for letra in telefono:
+            if letra < "0" or letra > "9":
+                valido = False
+        if valido == False:
+            print("   !! El telefono debe ser un numero.")
+            telefono = input("   Telefono         : ")
+
     id_cliente = len(clientes) + 1
     clientes.append([id_cliente, nombre, dni, telefono])
-    print("Cliente registrado con ID", id_cliente)
+    print("")
+    print("  +--------------------------------------+")
+    print("  |  Cliente registrado correctamente    |")
+    print("  +--------------------------------------+")
+    print("   ID asignado :", id_cliente)
+    print("   Nombre      :", nombre)
+    print("   DNI         :", dni)
 
 
 def listar_clientes():
-    print("\n--- Clientes ---")
+    titulo("CLIENTES")
     if len(clientes) == 0:
         print("No hay clientes cargados.")
+        return
+    print("  ID  | Nombre                 | DNI         | Telefono")
+    print("  " + "-" * 56)
     for c in clientes:
-        print("ID", c[0], "|", c[1], "| DNI", c[2], "| Tel", c[3])
+        print("  " + str(c[0]).ljust(3),
+              "|", c[1].ljust(22),
+              "|", c[2].ljust(11),
+              "|", c[3])
 
 
 # ============================================================
 #  Prestamos
 # ============================================================
 def registrar_prestamo():
-    print("\n--- Registrar prestamo ---")
+    titulo("REGISTRAR PRESTAMO")
     if len(clientes) == 0:
-        print("Primero registra al menos un cliente.")
+        print("!! Primero registra al menos un cliente.")
         return
 
-    dni = input("DNI del cliente: ")
+    print("  Complete los datos del prestamo:")
+    print("")
+
+    dni = input("   DNI del cliente   : ")
     cliente = None
     for c in clientes:
         if c[2] == dni:
             cliente = c
     if cliente == None:
-        print("No existe un cliente con ese DNI.")
+        print("   !! No existe un cliente con ese DNI.")
         return
+    print("   Cliente: " + cliente[1])
+    print("")
 
-    capital = float(input("Capital prestado: "))
-    tasa_pct = float(input("Tasa mensual (%): "))
+    entrada = input("   Capital prestado  : ")
+    valido = False
+    while valido == False:
+        valido = True
+        puntos = 0
+        if entrada == "":
+            valido = False
+        for letra in entrada:
+            if letra == ".":
+                puntos = puntos + 1
+            elif letra < "0" or letra > "9":
+                valido = False
+        if puntos > 1:
+            valido = False
+        if valido == False:
+            print("   !! El capital debe ser un numero mayor a 0.")
+            entrada = input("   Capital prestado  : ")
+    capital = float(entrada)
+
+    entrada = input("   Tasa mensual (%)  : ")
+    valido = False
+    while valido == False:
+        valido = True
+        puntos = 0
+        if entrada == "":
+            valido = False
+        for letra in entrada:
+            if letra == ".":
+                puntos = puntos + 1
+            elif letra < "0" or letra > "9":
+                valido = False
+        if puntos > 1:
+            valido = False
+        if valido == False:
+            print("   !! La tasa debe ser un numero.")
+            entrada = input("   Tasa mensual (%)  : ")
+    tasa_pct = float(entrada)
     tasa = tasa_pct / 100
-    n = int(input("Cantidad de cuotas: "))
 
-    print("Sistema de interes: 1) Simple   2) Frances")
-    op = int(input("Opcion: "))
+    entrada = input("   Cantidad de cuotas: ")
+    valido = False
+    while valido == False:
+        valido = True
+        if entrada == "":
+            valido = False
+        for letra in entrada:
+            if letra < "0" or letra > "9":
+                valido = False
+        if valido == True and int(entrada) <= 0:
+            valido = False
+        if valido == False:
+            print("   !! La cantidad de cuotas debe ser un numero entero mayor a 0.")
+            entrada = input("   Cantidad de cuotas: ")
+    n = int(entrada)
+
+    print("")
+    print("   Sistema de interes:  [1] Simple   [2] Frances")
+    entrada = input("   Opcion            : ")
+    while entrada != "1" and entrada != "2":
+        print("   !! Opcion invalida. Ingrese 1 o 2.")
+        entrada = input("   Opcion            : ")
+    op = int(entrada)
     if op == 2:
         sistema = "frances"
         cuota = calcular_cuota_frances(capital, tasa, n)
@@ -97,52 +203,106 @@ def registrar_prestamo():
         cuotas.append([id_prestamo, numero, round(cuota, 2), 0])
         numero = numero + 1
 
-    print("Prestamo registrado con ID", id_prestamo)
-    print("Cuota:", round(cuota, 2), "| Total a pagar:", round(cuota * n, 2))
+    print("")
+    print("  +--------------------------------------+")
+    print("  |  Prestamo registrado correctamente   |")
+    print("  +--------------------------------------+")
+    print("   ID asignado    :", id_prestamo)
+    print("   Sistema        :", sistema)
+    print("   Cantidad cuotas:", n)
+    print("   Valor de cuota : $", round(cuota, 2))
+    print("   Total a pagar  : $", round(cuota * n, 2))
 
 
 def listar_prestamos():
-    print("\n--- Prestamos ---")
+    titulo("PRESTAMOS")
     if len(prestamos) == 0:
         print("No hay prestamos cargados.")
+        return
+    print("  ID | Cli | Capital    | Cuotas | Sistema  | Estado   | Saldo")
+    print("  " + "-" * 62)
     for p in prestamos:
-        print("ID", p[0], "| Cliente", p[1], "| Capital", p[2],
-              "| Cuotas", p[4], "|", p[5], "|", p[6],
-              "| Saldo", round(saldo_pendiente(p[0]), 2))
+        print("  " + str(p[0]).ljust(2),
+              "|", str(p[1]).ljust(3),
+              "|", ("$ " + str(p[2])).ljust(10),
+              "|", str(p[4]).ljust(6),
+              "|", p[5].ljust(8),
+              "|", p[6].ljust(8),
+              "| $", round(saldo_pendiente(p[0]), 2))
 
 
 # ============================================================
 #  Pagos
 # ============================================================
 def registrar_pago():
-    print("\n--- Registrar pago ---")
-    id_prestamo = int(input("ID del prestamo: "))
+    titulo("REGISTRAR PAGO")
+    print("")
+    entrada = input("   ID del prestamo : ")
+    valido = False
+    while valido == False:
+        valido = True
+        if entrada == "":
+            valido = False
+        for letra in entrada:
+            if letra < "0" or letra > "9":
+                valido = False
+        if valido == False:
+            print("   !! El ID debe ser un numero.")
+            entrada = input("   ID del prestamo : ")
+    id_prestamo = int(entrada)
 
-    print("Cuotas pendientes:")
+    print("")
+    print("   Cuotas pendientes:")
     hay = False
     for c in cuotas:
         if c[0] == id_prestamo and c[3] == 0:
             hay = True
-            print("  Cuota", c[1], "-> $", c[2])
+            print("     - Cuota", str(c[1]).ljust(3), "-> $", c[2])
     if hay == False:
-        print("No hay cuotas pendientes para ese prestamo.")
+        print("   !! No hay cuotas pendientes para ese prestamo.")
         return
 
-    nro = int(input("Numero de cuota a pagar: "))
+    print("")
+    entrada = input("   Numero de cuota : ")
+    valido = False
+    while valido == False:
+        valido = True
+        if entrada == "":
+            valido = False
+        for letra in entrada:
+            if letra < "0" or letra > "9":
+                valido = False
+        if valido == False:
+            print("   !! El numero de cuota debe ser un numero.")
+            entrada = input("   Numero de cuota : ")
+    nro = int(entrada)
     cuota = None
     for c in cuotas:
         if c[0] == id_prestamo and c[1] == nro and c[3] == 0:
             cuota = c
     if cuota == None:
-        print("Esa cuota no esta pendiente.")
+        print("   !! Esa cuota no esta pendiente.")
         return
 
-    dias = int(input("Dias de atraso (0 si esta al dia): "))
+    entrada = input("   Dias de atraso  : ")
+    valido = False
+    while valido == False:
+        valido = True
+        if entrada == "":
+            valido = False
+        for letra in entrada:
+            if letra < "0" or letra > "9":
+                valido = False
+        if valido == False:
+            print("   !! Los dias deben ser un numero (0 o mas).")
+            entrada = input("   Dias de atraso  : ")
+    dias = int(entrada)
     mora = cuota[2] * TASA_MORA * dias
     total = cuota[2] + mora
+    print("")
     if mora > 0:
-        print("Recargo por mora:", round(mora, 2))
-    print("Total a pagar:", round(total, 2))
+        print("   Recargo por mora: $", round(mora, 2))
+    print("   Total a pagar:    $", round(total, 2))
 
     cuota[3] = 1
 
@@ -152,73 +312,127 @@ def registrar_pago():
             if p[0] == id_prestamo:
                 p[6] = "pagado"
 
-    print("Pago registrado. Saldo restante:", round(saldo_pendiente(id_prestamo), 2))
+    saldo = saldo_pendiente(id_prestamo)
+    print("")
+    print("  +--------------------------------------+")
+    print("  |  Pago registrado correctamente       |")
+    print("  +--------------------------------------+")
+    print("   Cuota pagada   :", nro)
+    print("   Saldo restante : $", round(saldo, 2))
+    if saldo <= 0:
+        print("   El prestamo quedo TOTALMENTE PAGADO.")
 
 
 # ============================================================
 #  Consultas
 # ============================================================
 def ver_deudas_activas():
-    print("\n--- Deudas activas ---")
+    titulo("DEUDAS ACTIVAS")
     hay = False
     for p in prestamos:
         saldo = saldo_pendiente(p[0])
         if saldo > 0:
+            if hay == False:
+                print("  Prestamo | Cliente | Debe")
+                print("  " + "-" * 32)
             hay = True
-            print("Prestamo", p[0], "| Cliente", p[1], "| Debe $", round(saldo, 2))
+            print("  " + str(p[0]).ljust(8),
+                  "|", str(p[1]).ljust(7),
+                  "| $", round(saldo, 2))
     if hay == False:
         print("No hay deudas activas.")
 
 
 def reporte_cliente():
-    print("\n--- Reporte por cliente ---")
-    dni = input("DNI: ")
+    titulo("REPORTE POR CLIENTE")
+    print("")
+    dni = input("   DNI del cliente : ")
     cliente = None
     for c in clientes:
         if c[2] == dni:
             cliente = c
     if cliente == None:
-        print("No se encontro el cliente.")
+        print("   !! No se encontro el cliente.")
         return
 
-    print("Cliente:", cliente[1], "| DNI", cliente[2])
+    print("")
+    print("  Cliente:", cliente[1], "| DNI", cliente[2])
     total_deuda = 0.0
     for p in prestamos:
         if p[1] == cliente[0]:
             saldo = saldo_pendiente(p[0])
             total_deuda = total_deuda + saldo
-            print("\n  Prestamo", p[0], "(", p[5], ") - Estado:", p[6])
+            print("")
+            print("  .---------------------------------------------.")
+            print("   Prestamo", p[0], "(", p[5], ") - Estado:", p[6])
+            print("  '---------------------------------------------'")
             for c in cuotas:
                 if c[0] == p[0]:
                     if c[3] == 1:
-                        estado = "PAGADA"
+                        estado = "[X] PAGADA"
                     else:
-                        estado = "pendiente"
-                    print("    Cuota", c[1], "$", c[2], "->", estado)
-    print("\n  Deuda total del cliente: $", round(total_deuda, 2))
+                        estado = "[ ] pendiente"
+                    print("     Cuota", str(c[1]).ljust(3), "-> $", str(c[2]).ljust(8), estado)
+    print("")
+    print("  " + "=" * 40)
+    print("   Deuda total del cliente: $", round(total_deuda, 2))
+    print("  " + "=" * 40)
 
 
 # ============================================================
 #  Menu principal
 # ============================================================
+def titulo(texto):
+    # Imprime un encabezado con marco ASCII
+    linea = "+" + "-" * 40 + "+"
+    print(linea)
+    print("| " + texto.ljust(38) + " |")
+    print(linea)
+
+
 def menu():
-    print("\n==============================")
-    print("   SISTEMA DE PRESTAMOS")
-    print("==============================")
-    print("1. Registrar cliente")
-    print("2. Listar clientes")
-    print("3. Registrar prestamo")
-    print("4. Listar prestamos")
-    print("5. Registrar pago")
-    print("6. Ver deudas activas")
-    print("7. Reporte por cliente")
-    print("0. Salir")
+    print("")
+    print("+========================================+")
+    print("|         SISTEMA DE PRESTAMOS           |")
+    print("+========================================+")
+    print("|  [1] Registrar cliente                 |")
+    print("|  [2] Listar clientes                   |")
+    print("|  [3] Registrar prestamo                |")
+    print("|  [4] Listar prestamos                  |")
+    print("|  [5] Registrar pago                    |")
+    print("|  [6] Ver deudas activas                |")
+    print("|  [7] Reporte por cliente               |")
+    print("|  [0] Salir                             |")
+    print("+========================================+")
 
 
 def main():
     while True:
+        os.system("cls")
         menu()
-        op = int(input("Opcion: "))
+        entrada = input("Opcion: ")
+        valido = False
+        while valido == False:
+            valido = True
+            if entrada == "":
+                valido = False
+            for letra in entrada:
+                if letra < "0" or letra > "9":
+                    valido = False
+            if valido == False:
+                print("!! Opcion invalida. Ingrese un numero.")
+                entrada = input("Opcion: ")
+        op = int(entrada)
+
+        if op == 0:
+            os.system("cls")
+            print("+========================================+")
+            print("|        Gracias por usar el sistema     |")
+            print("|              Hasta luego!              |")
+            print("+========================================+")
+            break
+
+        os.system("cls")
         if op == 1:
             registrar_cliente()
         elif op == 2:
@@ -233,11 +447,11 @@ def main():
             ver_deudas_activas()
         elif op == 7:
             reporte_cliente()
-        elif op == 0:
-            print("Hasta luego!")
-            break
         else:
-            print("Opcion invalida.")
+            print("!! Opcion invalida.")
+
+        print("")
+        input("Presione Enter para volver al menu...")
 
 
 main()
