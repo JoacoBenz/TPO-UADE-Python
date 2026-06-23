@@ -74,6 +74,14 @@ def registrar_cliente():
         if valido == False:
             print("   !! El DNI debe ser un numero (o c para cancelar).")
             dni = input("   DNI              : ")
+        else:
+            # Se chequea que no exista ya un cliente con ese DNI
+            for c in clientes:
+                if c[2] == dni:
+                    valido = False
+            if valido == False:
+                print("   !! Ya existe un cliente con ese DNI (o c para cancelar).")
+                dni = input("   DNI              : ")
 
     telefono = input("   Telefono         : ")
     valido = False
