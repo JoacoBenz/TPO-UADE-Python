@@ -750,6 +750,9 @@ def cargar_datos_demo():
     prestamos.append([9,  9,   60000.0, 0.04,  6, "simple",  "activo"])
     prestamos.append([10, 10,  90000.0, 0.05,  9, "frances", "activo"])
 
+    # --- Cantidad de cuotas pagadas por prestamo (indice = id_prestamo - 1) ---
+    pagas = [3, 6, 5, 1, 2, 4, 4, 0, 2, 3]
+
     # --- Lista de cuotas ---  [id_prestamo, numero, monto, pagada]
     for p in prestamos:
         id_prestamo = p[0]
