@@ -1,0 +1,22 @@
+# El launcher corre sobre el kernel Athena (Python 3.7): ruff valida que no
+# se cuele sintaxis mas nueva (walrus, parametros posicionales, etc).
+target-version = "py37"
+line-length = 100
+
+# Los notebooks de demo contienen codigo deliberadamente feo (formato con %,
+# warnings sin stacklevel): su trabajo es ejercitar el launcher, no ser
+# ejemplares. Lintearlos solo produce ruido.
+exclude = ["demo/share/notebooks"]
+
+[lint]
+select = ["E", "F", "W", "I", "UP", "B", "C4"]
+ignore = [
+    "E501",    # el largo de linea lo controla el formatter
+    "UP006",   # list[x] en anotaciones no existe en 3.7
+    "UP007",   # x | y en anotaciones no existe en 3.7
+    "UP035",   # idem, imports de typing
+    "UP045",   # Optional[x] -> x | None es sintaxis 3.10
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["B011"]

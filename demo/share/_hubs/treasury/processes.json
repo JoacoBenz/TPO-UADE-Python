@@ -1,0 +1,54 @@
+{
+  "processes": [
+    {
+      "description": "Consolida posiciones de cierre del dia.",
+      "how_to_run": "Correr despues de las 18:00, cuando cerro el feed de precios.",
+      "id": "eod_positions",
+      "name": "EOD Positions",
+      "notebook": "/notebooks/ok.ipynb",
+      "tags": [
+        "eod",
+        "posiciones"
+      ],
+      "timeout_seconds": 600
+    },
+    {
+      "description": "Revalua la cartera con los tipos de cambio del dia.",
+      "how_to_run": "Tarda alrededor de un minuto. Se puede cortar con Stop.",
+      "id": "fx_revaluation",
+      "name": "FX Revaluation",
+      "notebook": "/notebooks/slow.ipynb",
+      "tags": [
+        "fx"
+      ],
+      "timeout_seconds": 300
+    },
+    {
+      "description": "Detecta diferencias de caja contra el custodio.",
+      "how_to_run": "Si falla, revisar que el archivo del custodio haya llegado.",
+      "id": "cash_break",
+      "name": "Cash Break Report",
+      "notebook": "/notebooks/fails.ipynb",
+      "tags": [
+        "conciliacion"
+      ],
+      "timeout_seconds": 300
+    },
+    {
+      "description": "Sube instrucciones de settlement a DTC.",
+      "how_to_run": "Pide credenciales de red: el launcher las responde solo.",
+      "id": "dtc_upload",
+      "name": "DTC Upload",
+      "notebook": "/notebooks/needs_creds.ipynb",
+      "parameters": {
+        "run_date": "today"
+      },
+      "requires_confirmation": true,
+      "tags": [
+        "dtc",
+        "settlement"
+      ],
+      "timeout_seconds": 900
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "processes": [
+    {
+      "description": "High-Grade multi-tranche initial settlement.",
+      "id": "hg_multi_is",
+      "name": "HG Multi — Initial Settlement",
+      "notebook": "/notebooks/ok.ipynb",
+      "tags": [
+        "HG"
+      ]
+    }
+  ]
+}

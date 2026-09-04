@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+.voila/
+
+# Salida de ejecucion: nunca commitear corridas reales ni el log de auditoria.
+# La barra inicial ancla el patron a la raiz del repo: sin ella tambien se
+# excluirian los demo/share/_hubs/*/runs/, y git no puede volver a incluir
+# archivos que estan dentro de un directorio excluido.
+/runs/
+/*.jsonl
+
+# Config local: launcher_config.py es especifico de cada deploy.
+# Se versiona launcher_config.example.py, no el real.
+/launcher_config.py
+
+# Capturas y artefactos locales
+screenshots/
+
+# Bundle generado por tools/build_single_notebook.py
+dist/

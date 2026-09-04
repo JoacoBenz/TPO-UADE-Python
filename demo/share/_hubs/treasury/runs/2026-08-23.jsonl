@@ -1,0 +1,1 @@
+{"run_id": "2026-08-23-2011", "hub_id": "treasury", "process_id": "fx_revaluation", "process_name": "FX Revaluation", "sid": "carlos.m", "state": "done", "started_at": "2026-08-23T19:07:00", "finished_at": "2026-08-23T19:07:00", "duration_seconds": 115.22, "lines": 354, "warnings": 0, "errors": 0, "message": ""}

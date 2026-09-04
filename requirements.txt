@@ -1,0 +1,7 @@
+# Runtime del Automation Launcher.
+#
+# Compatible con Python 3.7 (kernel Athena). Los pines de version son
+# los ultimos que soportan 3.7; en 3.8+ pip resolvera versiones mas nuevas.
+ipywidgets>=7.5,<9
+requests>=2.22
+voila>=0.2

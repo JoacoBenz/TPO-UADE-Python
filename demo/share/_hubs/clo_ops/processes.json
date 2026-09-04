@@ -1,0 +1,26 @@
+{
+  "processes": [
+    {
+      "description": "Upload CLO positions to DTC.",
+      "how_to_run": "Correr despues del pricing file de las 16:00.",
+      "id": "clo_dtc_upload",
+      "name": "CLO DTC Upload",
+      "notebook": "/notebooks/ok.ipynb",
+      "requires_confirmation": true,
+      "tags": [
+        "CLO",
+        "settlement"
+      ]
+    },
+    {
+      "description": "Concilia posiciones CLO contra el trustee.",
+      "how_to_run": "Termina con advertencias a proposito: sirve para ver el estado ambar.",
+      "id": "clo_recon",
+      "name": "CLO Reconciliation",
+      "notebook": "/notebooks/warns.ipynb",
+      "tags": [
+        "CLO"
+      ]
+    }
+  ]
+}

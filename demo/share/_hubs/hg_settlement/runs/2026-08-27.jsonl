@@ -1,0 +1,1 @@
+{"run_id": "2026-08-27-9598", "hub_id": "hg_settlement", "process_id": "hg_multi_is", "process_name": "HG Multi — Initial Settlement", "sid": "sofia.p", "state": "error", "started_at": "2026-08-27T10:41:00", "finished_at": "2026-08-27T10:41:00", "duration_seconds": 81.03, "lines": 21, "warnings": 0, "errors": 1, "message": "fallo la conexion al custodio"}

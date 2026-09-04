@@ -1,0 +1,1 @@
+{"run_id": "2026-08-30-2677", "hub_id": "treasury", "process_id": "fx_revaluation", "process_name": "FX Revaluation", "sid": "ana.g", "state": "done", "started_at": "2026-08-30T17:03:00", "finished_at": "2026-08-30T17:03:00", "duration_seconds": 29.05, "lines": 295, "warnings": 0, "errors": 0, "message": ""}

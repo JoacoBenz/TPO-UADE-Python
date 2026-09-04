@@ -1,0 +1,22 @@
+{
+  "hubs": [
+    {
+      "description": "Automatizaciones de tesoreria y settlement diario.",
+      "id": "treasury",
+      "name": "Treasury Ops",
+      "path": "treasury"
+    },
+    {
+      "description": "Carga y conciliacion de posiciones CLO.",
+      "id": "clo_ops",
+      "name": "CLO Operations",
+      "path": "clo_ops"
+    },
+    {
+      "description": "Settlement de High Grade, single y multi-tranche.",
+      "id": "hg_settlement",
+      "name": "HG Settlement",
+      "path": "hg_settlement"
+    }
+  ]
+}
