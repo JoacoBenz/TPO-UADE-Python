@@ -25,6 +25,13 @@ echo "==> Instalando dependencias"
 python -m pip install --quiet --upgrade pip
 python -m pip install --quiet -r requirements.txt
 
+# Instalar el paquete ipykernel no alcanza: Voila necesita el kernelspec
+# registrado aparte, o responde 500 con "No Jupyter kernel for language
+# 'python' found". Se registra dentro del venv, autocontenido, y --sys-prefix
+# hace que quede scopeado a este venv en vez de ensuciar el perfil del usuario.
+echo "==> Registrando el kernel de Python para Jupyter"
+python -m ipykernel install --sys-prefix --name python3 --display-name "Python 3" >/dev/null
+
 # El launcher busca ./launcher_config.py. En modo demo se apunta al de demo/
 # con un enlace, para no tener que tocar el codigo ni pasar parametros.
 if [ ! -e launcher_config.py ]; then

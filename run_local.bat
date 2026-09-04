@@ -24,6 +24,12 @@ echo ==^> Instalando dependencias
 python -m pip install --quiet --upgrade pip
 python -m pip install --quiet -r requirements.txt
 
+REM Instalar el paquete ipykernel no alcanza: Voila necesita el kernelspec
+REM registrado aparte, o responde 500 con "No Jupyter kernel for language
+REM 'python' found". --sys-prefix lo deja scopeado a este venv.
+echo ==^> Registrando el kernel de Python para Jupyter
+python -m ipykernel install --sys-prefix --name python3 --display-name "Python 3" >nul
+
 if not exist "launcher_config.py" (
     echo ==^> Copiando launcher_config.py desde demo\
     copy /y demo\launcher_config.demo.py launcher_config.py >nul

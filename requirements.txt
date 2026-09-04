@@ -5,3 +5,9 @@
 ipywidgets>=7.5,<9
 requests>=2.22
 voila>=0.2
+
+# Le da a Voila un kernel de Python al que conectarse. En el kernel Athena
+# de produccion ya existe (por eso "doctor" solo lo reporta, no lo instala);
+# en una maquina local nueva falta, y sin el Voila responde 500 con
+# "No Jupyter kernel for language 'python' found".
+ipykernel>=5.5,<6.10
