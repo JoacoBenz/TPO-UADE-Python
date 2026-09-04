@@ -63,22 +63,25 @@ def topbar(org_name):
     )
 
 
-def stat_card(value, label, tone="", wide=False, mono=False):
-    # type: (Any, str, str, bool, bool) -> str
-    """Una de las tarjetas de numeros del tablero."""
+def stat_card(value, label, tone="", mono=False):
+    # type: (Any, str, str, bool) -> str
+    """Una de las tarjetas de numeros del tablero.
+
+    Todas ocupan una porcion igual del ancho del panel (ver ``.al-stat`` en
+    theme.py): no hay una variante "angosta" ni "ancha", la distribucion
+    pareja es lo que evita que las tarjetas se agrupen a la izquierda y
+    dejen la mitad del panel como espacio vacio.
+    """
     classes = ["al-stat-value"]
     if tone:
         classes.append("al-v-" + tone)
     if mono:
         classes.append("al-v-mono")
     return (
-        '<div class="al-stat{wide}">'
-        '<div class="{cls}">{value}</div>'
-        '<div class="al-stat-label">{label}</div>'
+        '<div class="al-stat">'
+        f'<div class="{" ".join(classes)}">{esc(value)}</div>'
+        f'<div class="al-stat-label">{esc(label)}</div>'
         "</div>"
-    ).format(
-        wide=" al-stat-wide" if wide else "", cls=" ".join(classes),
-        value=esc(value), label=esc(label),
     )
 
 

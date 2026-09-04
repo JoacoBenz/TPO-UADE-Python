@@ -187,34 +187,60 @@ class LauncherApp:
         else:
             self._show_hub_picker(hubs)
 
+    def _gate_header(self, title, subtitle):
+        # type: (str, str) -> W.HBox
+        """El encabezado de una pantalla "puerta" (selector de hub, sin hubs).
+
+        Mismo icono y misma tipografia que usa ``DashboardView`` para su
+        encabezado: estas pantallas son una escala mas abajo del dashboard,
+        no una experiencia aparte, y tienen que leerse como parte de la
+        misma aplicacion.
+        """
+        return W.HBox(
+            [
+                ui.html_box('<div class="al-header-icon">⌘</div>'),
+                ui.html_box(
+                    f'<div><div class="al-header-title">{ui.esc(title)}</div>'
+                    f'<div class="al-header-sub">{ui.esc(subtitle)}</div></div>'
+                ),
+            ],
+            layout=W.Layout(align_items="center", margin="0 0 20px 0"),
+        )
+
     def _show_no_hubs(self, principal):
         # type: (Any) -> None
         """Cuando alguien entra pero no pertenece a ningun hub.
 
         Se explica que hacer en vez de mostrar una pantalla vacia: el usuario
         no tiene forma de saber que la solucion es pedirle acceso a un jefe.
+        Va en la misma tarjeta centrada que el selector de hub y el login,
+        no como texto suelto sobre el fondo.
         """
-        back = ui.button("Volver", ["al-btn-primary"])
+        back = ui.button("Volver", ["al-btn-primary", "al-btn-wide"])
         back.on_click(lambda _b: self._sign_out())
-        self.container.children = [
-            W.VBox(
-                [
-                    ui.html_box(
-                        '<div class="al-empty" style="max-width:560px;margin:60px auto 16px">'
-                        "<div style='font-size:34px;margin-bottom:10px'>🔑</div>"
-                        f"<b>{ui.esc(principal.sid)}</b> no pertenece a ningún hub todavía.<br><br>"
-                        "Los equipos se administran desde el propio launcher: pedile al "
-                        "jefe de tu equipo que te agregue y volvé a entrar."
-                        "</div>"
-                    ),
-                    W.Box([back], layout=W.Layout(justify_content="center")),
-                ]
-            )
-        ]
+        card = W.VBox(
+            [
+                self._gate_header(self.config.get("APP_TITLE"), "Sin acceso a ningún hub"),
+                ui.html_box(
+                    '<div class="al-empty">'
+                    "<div style='font-size:34px;margin-bottom:10px'>🔑</div>"
+                    f"<b>{ui.esc(principal.sid)}</b> no pertenece a ningún hub todavía.<br><br>"
+                    "Los equipos se administran desde el propio launcher: pedile al "
+                    "jefe de tu equipo que te agregue y volvé a entrar."
+                    "</div>"
+                ),
+                back,
+            ],
+            layout=W.Layout(margin="16px 0 0 0"),
+        )
+        card.add_class("al-gate-card")
+        wrap = W.Box([card])
+        wrap.add_class("al-login-wrap")
+        self.container.children = [wrap]
 
     def _show_hub_picker(self, hubs):
         # type: (List[Any]) -> None
-        cards = []      # type: List[Any]
+        rows = []      # type: List[Any]
         for hub in hubs:
             role = self.ctx.principal.role_in(hub.id) or ""
             # El wrapper flex es necesario: este HTML entra como un solo hijo
@@ -235,30 +261,18 @@ class LauncherApp:
             enter.on_click(lambda _b, h=hub: self._show_hub(h, allow_switch=True))
             row = W.HBox([label, enter], layout=W.Layout(align_items="center", width="100%"))
             row.add_class("al-proc")
-            cards.append(row)
+            rows.append(row)
 
         signout = ui.button("Sign Out")
         signout.on_click(lambda _b: self._sign_out())
-        self.container.children = [
-            W.VBox(
-                [
-                    W.HBox(
-                        [
-                            ui.html_box(
-                                '<div><div class="al-header-title">Tus hubs</div>'
-                                f'<div class="al-header-sub">Pertenecés a {len(hubs)} equipos. '
-                                "Elegí con cuál trabajar.</div></div>"
-                            ),
-                            W.Box(layout=W.Layout(flex="1")),
-                            signout,
-                        ],
-                        layout=W.Layout(align_items="center", width="100%"),
-                    )
-                ]
-                + cards,
-                layout=W.Layout(max_width="700px", margin="40px auto"),
-            )
-        ]
+        header = self._gate_header("Tus hubs", f"Pertenecés a {len(hubs)} equipos. Elegí con cuál trabajar.")
+        header.children = (*header.children, W.Box(layout=W.Layout(flex="1")), signout)
+
+        card = W.VBox([header] + rows)
+        card.add_class("al-gate-card")
+        wrap = W.Box([card])
+        wrap.add_class("al-login-wrap")
+        self.container.children = [wrap]
 
     def _show_hub(self, hub, allow_switch=False):
         # type: (Any, bool) -> None

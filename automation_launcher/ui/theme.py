@@ -188,6 +188,16 @@ LOGIN = """
 .al-status-ok    { background: #e9f9ef; color: #14803c; }
 .al-dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%;
           margin-right: 7px; vertical-align: middle; background: currentColor; }
+
+/* --- pantallas "puerta": selector de hub y "no pertenecés a ningún hub" -- */
+/* Van entre el login y el dashboard, y comparten su lenguaje visual: una
+   tarjeta centrada con sombra, no contenido flotando directo sobre el
+   fondo. Sin esto, estas dos pantallas eran el unico lugar de la app que se
+   veia roto -- un VBox con layout inline en medio de una pagina vacia. */
+.al-gate-card {
+  width: 600px; max-width: 92vw; background: var(--al-surface);
+  border-radius: 18px; box-shadow: var(--al-shadow-lg); padding: 30px 34px 26px;
+}
 """
 
 DASHBOARD = """
@@ -214,18 +224,21 @@ DASHBOARD = """
 }
 
 /* --- tarjetas de metricas superiores ------------------------------------ */
+/* Las 5 tarjetas reparten el ancho del panel entre ellas (flex:1 en cada
+   una) en vez de agruparse por izquierda con un min-width fijo y dejar todo
+   lo demas como espacio muerto. flex-basis:150px es el piso: por debajo de
+   eso pasan a envolver en una segunda fila antes que aplastarse. */
 .al-stats { display: flex; gap: 14px; margin-bottom: 22px; flex-wrap: wrap; }
 .al-stat {
   background: var(--al-surface); border: 1px solid var(--al-border);
   border-radius: var(--al-radius); box-shadow: var(--al-shadow);
-  padding: 16px 20px; min-width: 108px;
+  padding: 18px 22px; flex: 1 1 150px;
 }
 .al-stat-value { font-size: 30px; font-weight: 700; line-height: 1.1; letter-spacing: -1px; }
 .al-stat-label {
   font-size: 10px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
   color: var(--al-text-faint); margin-top: 5px;
 }
-.al-stat-wide { flex: 1; }
 .al-v-primary { color: var(--al-primary); }
 .al-v-warn    { color: var(--al-warn); }
 .al-v-ok      { color: var(--al-ok); }
