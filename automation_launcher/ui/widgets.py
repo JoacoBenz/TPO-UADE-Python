@@ -226,6 +226,24 @@ class ConsoleView:
         self.body.value = "".join(rendered) + '<div id="al-console-end"></div>'
 
 
+def process_status_dot(state, running):
+    # type: (Optional[str], bool) -> str
+    """El punto de color a la izquierda del nombre del proceso.
+
+    Reemplaza al icono ▶ que habia antes ahi, que era puramente decorativo
+    -- no representaba nada del estado real. Gris tenue si el proceso todavia
+    no corrio en esta sesion, ambar pulsando mientras corre, y el color del
+    resultado (verde/ambar/rojo/gris) una vez que termina. Con una lista
+    larga de procesos, este punto es lo que se escanea de un vistazo antes
+    de leer ningun texto.
+    """
+    if running:
+        return '<span class="al-proc-dot al-dot-running" title="Corriendo"></span>'
+    if not state:
+        return '<span class="al-proc-dot al-dot-idle" title="Sin corridas en esta sesión"></span>'
+    return f'<span class="al-proc-dot al-dot-{esc(state)}" title="{esc(state)}"></span>'
+
+
 def process_row(process, state=None, running=False):
     # type: (Any, Optional[str], bool) -> str
     """El bloque de texto de una fila de proceso (sin los botones)."""
@@ -236,9 +254,10 @@ def process_row(process, state=None, running=False):
     if state:
         badge = f'<span class="al-proc-state al-st-{esc(state)}">{esc(state)}</span>'
     lock = ' <span title="Pide confirmación">🔒</span>' if process.requires_confirmation else ""
+    dot = process_status_dot(state, running)
     return (
         '<div style="display:flex;align-items:center;gap:10px">'
-        f'<div class="al-proc-name">{esc(process.name)}{lock}</div>{badge}</div>'
+        f'{dot}<div class="al-proc-name">{esc(process.name)}{lock}</div>{badge}</div>'
         f'<div class="al-proc-file">{esc(process.notebook)}</div>'
         f"{tags}"
     )

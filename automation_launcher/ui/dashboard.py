@@ -50,7 +50,6 @@ class ProcessCard:
 
         row = W.HBox(
             [
-                ui.html_box('<div class="al-proc-play">▶</div>'),
                 W.Box([self.text], layout=W.Layout(flex="1", overflow="hidden")),
                 self.info_button,
                 self.run_button,
@@ -88,6 +87,13 @@ class ProcessCard:
         if self.can_run:
             self.run_button.description = "Corriendo" if self.running else "Run"
             self.run_button.disabled = self.running
+        # El contorno de la tarjeta entera marca la corrida activa, no solo
+        # el badge de texto: en una lista larga es lo que se ve al pasar de
+        # largo con el ojo, antes de leer ningun texto.
+        if self.running:
+            self.widget.add_class("al-proc-running")
+        else:
+            self.widget.remove_class("al-proc-running")
 
 
 class DashboardView:
@@ -118,6 +124,7 @@ class DashboardView:
             placeholder="Buscar…",
             layout=W.Layout(width="220px", margin="0 8px 0 0"),
         )
+        self.search.add_class("al-search")
         self.search.observe(lambda _c: self._render_list(), names="value")
 
         self.refresh_button = ui.button("Refresh", tooltip="Volver a leer el share")
@@ -231,12 +238,15 @@ class DashboardView:
         if not active:
             finished = [r for r in self.ctx.manager.runs(self.hub.id) if not r.is_active]
             elapsed = finished[0].elapsed if finished else 0.0
+        # "0 fallados" no es una noticia: coloreado de rojo igual que "3
+        # fallados" hace que el ojo no distinga cuando algo de verdad necesita
+        # atencion. El color se gana cuando el numero es distinto de cero.
         self.stats_box.value = (
             '<div class="al-stats">{}{}{}{}{}</div>'.format(
                 ui.stat_card(len(self.processes), "Procesos", "primary"),
-                ui.stat_card(counts["running"], "Corriendo", "warn"),
-                ui.stat_card(counts["completed"], "Completados", "ok"),
-                ui.stat_card(counts["failed"], "Fallados", "error"),
+                ui.stat_card(counts["running"], "Corriendo", "warn" if counts["running"] else ""),
+                ui.stat_card(counts["completed"], "Completados", "ok" if counts["completed"] else ""),
+                ui.stat_card(counts["failed"], "Fallados", "error" if counts["failed"] else ""),
                 ui.stat_card(ui.format_duration(elapsed), "Última / en vivo", "primary", mono=True),
             )
         )

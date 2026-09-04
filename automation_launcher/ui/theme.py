@@ -139,6 +139,10 @@ body, .jp-Notebook, #rendered_cells {
   border-color: var(--al-primary) !important;
   box-shadow: 0 0 0 3px rgba(47,111,237,.14) !important; outline: none !important;
 }
+
+/* El buscador del toolbar vive entre botones-pastilla (radius 999px); un
+   rectangulo de radius 10px al lado se nota como una costura. */
+.widget-text.al-search input { border-radius: 999px !important; padding-left: 16px !important; }
 """
 
 LOGIN = """
@@ -233,12 +237,39 @@ DASHBOARD = """
   background: var(--al-surface); border: 1px solid var(--al-border);
   border-radius: var(--al-radius); box-shadow: var(--al-shadow);
   padding: 14px 16px; margin-bottom: 11px;
+  transition: box-shadow .15s ease, border-color .15s ease;
 }
-.al-proc-play {
-  width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--al-border);
-  color: var(--al-primary); display: flex; align-items: center; justify-content: center;
-  font-size: 11px; flex-shrink: 0;
+.al-proc:hover {
+  border-color: #cfd9ea;
+  box-shadow: 0 2px 6px rgba(16,32,64,.06), 0 14px 30px rgba(16,32,64,.09);
 }
+/* La corrida activa se marca en el borde de toda la tarjeta, no solo en el
+   badge de texto: en una lista larga, scrolleando, el badge se pierde de
+   vista antes que un contorno de color. */
+.al-proc-running {
+  border-color: rgba(217,119,6,.35);
+  box-shadow: 0 0 0 1px rgba(217,119,6,.14), var(--al-shadow);
+}
+
+/* Punto de estado: reemplaza al viejo icono ▶ que no representaba nada.
+   Gris tenue = todavia no corrio en esta sesion; ambar pulsando = corriendo;
+   solido del color del resultado = como termino la ultima corrida. */
+.al-proc-dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  background: var(--al-text-faint); opacity: .45;
+}
+.al-dot-pending,
+.al-dot-running  { background: var(--al-warn); opacity: 1; animation: al-pulse 1.4s ease-in-out infinite; }
+.al-dot-done     { background: var(--al-ok); opacity: 1; }
+.al-dot-warn     { background: var(--al-warn); opacity: 1; }
+.al-dot-error,
+.al-dot-timeout  { background: var(--al-error); opacity: 1; }
+.al-dot-cancelled { background: var(--al-text-faint); opacity: 1; }
+@keyframes al-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(217,119,6,.35); }
+  50%      { box-shadow: 0 0 0 5px rgba(217,119,6,0); }
+}
+
 .al-proc-name { font-size: 14.5px; font-weight: 700; line-height: 1.3; }
 .al-proc-file {
   font-size: 12px; color: var(--al-text-soft); font-family: var(--al-mono);
@@ -259,10 +290,12 @@ DASHBOARD = """
   font-size: 10px; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
   border-radius: 5px; padding: 3px 8px;
 }
+.al-st-pending   { background: #fff3e0; color: var(--al-warn); }
 .al-st-running   { background: #fff3e0; color: var(--al-warn); }
 .al-st-done      { background: #e9f9ef; color: var(--al-ok); }
 .al-st-warn      { background: #fff3e0; color: var(--al-warn); }
 .al-st-error     { background: var(--al-error-soft); color: var(--al-error); }
+.al-st-timeout   { background: var(--al-error-soft); color: var(--al-error); }
 .al-st-cancelled { background: var(--al-surface-alt); color: var(--al-text-soft); }
 
 /* --- consola ------------------------------------------------------------ */
@@ -294,10 +327,14 @@ DASHBOARD = """
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .al-line-text { color: var(--al-console-text); flex: 1; }
-.al-lv-warn    .al-line-text { color: #fbbf24; }
-.al-lv-error   .al-line-text { color: #f87171; }
-.al-lv-success .al-line-text { color: #4ade80; }
-.al-lv-system  .al-line-text { color: #93b4f5; }
+/* system/success/warn/error son el inicio, el resultado y los avisos de una
+   corrida -- el "hilo narrativo" en medio de un stdout ruidoso. Un poco mas
+   de peso que el texto normal alcanza para que el ojo los encuentre sin
+   tener que leer cada linea. */
+.al-lv-warn    .al-line-text { color: #fbbf24; font-weight: 600; }
+.al-lv-error   .al-line-text { color: #f87171; font-weight: 600; }
+.al-lv-success .al-line-text { color: #4ade80; font-weight: 600; }
+.al-lv-system  .al-line-text { color: #93b4f5; font-weight: 600; }
 .al-console-hint {
   color: var(--al-text-soft); font-size: 13px; font-style: italic;
   padding: 15px 18px; background: var(--al-surface);
@@ -326,7 +363,9 @@ ADMIN = """
   display: flex; align-items: center; gap: 11px; padding: 9px 13px;
   border: 1px solid var(--al-border); border-radius: var(--al-radius-sm);
   margin-bottom: 8px; background: var(--al-surface);
+  transition: background .12s ease, border-color .12s ease;
 }
+.al-member:hover { background: var(--al-surface-alt); border-color: #d7deec; }
 .al-member-avatar {
   width: 30px; height: 30px; border-radius: 50%; background: var(--al-primary-soft);
   color: var(--al-primary-dark); display: flex; align-items: center; justify-content: center;
@@ -348,8 +387,9 @@ ADMIN = """
   text-transform: uppercase; color: var(--al-text-faint);
   padding: 9px 12px; border-bottom: 1px solid var(--al-border);
 }
-.al-table td { padding: 11px 12px; border-bottom: 1px solid #f0f3f9; }
+.al-table td { padding: 11px 12px; border-bottom: 1px solid #f0f3f9; transition: background .1s ease; }
 .al-table tr:last-child td { border-bottom: none; }
+.al-table tr:hover td { background: var(--al-surface-alt); }
 .al-table .al-num { text-align: right; font-family: var(--al-mono); font-size: 12.5px; }
 .al-bar { background: var(--al-surface-alt); border-radius: 4px; height: 7px; overflow: hidden;
           min-width: 90px; }
