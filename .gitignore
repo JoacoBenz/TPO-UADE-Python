@@ -1,0 +1,34 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+build/
+dist/
+.venv/
+venv/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.ruff_cache/
+
+# Config real del emisor: nunca se versiona, cada instalacion tiene la suya
+/config.py
+
+# Credenciales AFIP: la clave privada NUNCA sale de la maquina que la genero,
+# ni siquiera hacia un commit propio. El .crt sin la .key es inutil para
+# cualquiera, pero igual no tienen por que vivir en git.
+*.key
+*.crt
+*.csr
+*.pem
+
+# Cache de tokens de WSAA (token/sign vigentes por 12hs)
+afip_cache/
+
+# El Excel real tiene DNIs de personas reales: dato personal, no a git.
+# Se versiona solo la plantilla de ejemplo con datos ficticios.
+/*.xlsx
+!demo/*.xlsx

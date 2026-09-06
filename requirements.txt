@@ -1,0 +1,4 @@
+# Cliente de Facturacion Electronica AFIP (WSFEv1).
+zeep>=4.2            # cliente SOAP: parsea el WSDL y arma los requests
+cryptography>=41.0   # firma CMS/PKCS7 del TRA para WSAA, y generacion de CSR
+openpyxl>=3.1        # lectura del Excel con las cuotas a facturar
